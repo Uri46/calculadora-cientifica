@@ -2,9 +2,10 @@
 
 Una calculadora científica moderna desarrollada con **HTML5, CSS3 y JavaScript puro (Vanilla JS)**, sin librerías externas ni dependencias. Implementa un motor matemático propio con **tokenizador y parser por descenso recursivo**, prescindiendo completamente de funciones inseguras como `eval()` o `new Function()`.
 
-[AGREGAR CAPTURA]
+![Calculadora científica](docs/captura.png)
+*Vista de la calculadora en modo grados con cálculo de sin(90) e historial de operaciones activo.*
 
-> 🌐 **Demo en vivo:** [https://uri46.github.io/calculadora-cientifica/](https://uri46.github.io/calculadora-cientifica/) *(se activará tras habilitar GitHub Pages en el repositorio)*.
+> 🌐 **Demo en vivo:** [https://uri46.github.io/calculadora-cientifica/](https://uri46.github.io/calculadora-cientifica/)
 
 ---
 

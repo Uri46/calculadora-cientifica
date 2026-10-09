@@ -553,4 +553,18 @@
   // ==========================================================================
   initEvents();
   updateDisplay();
+
+  // Soporte para estado predefinido por parámetro URL (ej. preset=sin90 para capturas/demos)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('preset') === 'sin90') {
+      insertValue('sin(');
+      insertValue('90');
+      insertValue(')');
+      calculateResult();
+      toggleHistoryPanel(true);
+    }
+  } catch {
+    // Si no está disponible window.location, continuar normalmente
+  }
 })();
