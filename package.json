@@ -1,0 +1,16 @@
+{
+  "name": "calculadora-cientifica",
+  "version": "1.0.0",
+  "description": "Calculadora científica en JavaScript puro con tokenizador y parser propios",
+  "main": "calculadora.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "calculadora",
+    "parser",
+    "matematicas",
+    "javascript"
+  ],
+  "author": "Uri46"
+}

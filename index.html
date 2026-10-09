@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Calculadora científica con tokenizador y parser propios en JavaScript puro. Sin eval(), responsive y con soporte para teclado físico.">
+  <title>Calculadora Científica</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="calculator-container">
+    <header class="calculator-header">
+      <div class="header-title-group">
+        <span class="calc-icon" aria-hidden="true">𝑓(𝑥)</span>
+        <h1 class="header-title">Calculadora Científica</h1>
+      </div>
+      <div class="header-controls">
+        <button id="btn-angle-toggle" class="badge-btn" type="button" aria-label="Cambiar entre grados y radianes">
+          <span class="badge-mode active" id="deg-indicator">DEG</span>
+          <span class="badge-divider">/</span>
+          <span class="badge-mode" id="rad-indicator">RAD</span>
+        </button>
+        <button id="btn-toggle-history" class="icon-btn" type="button" title="Historial de operaciones" aria-label="Historial de operaciones">
+          <span aria-hidden="true">🕒</span>
+        </button>
+        <button id="btn-toggle-theme" class="icon-btn" type="button" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema claro/oscuro">
+          <span id="theme-icon" aria-hidden="true">☀️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Panel de Historial desplegable -->
+    <section id="history-panel" class="history-panel" aria-label="Historial de cálculos" hidden>
+      <div class="history-header">
+        <h2 class="history-title">Historial de Operaciones</h2>
+        <div class="history-actions">
+          <button id="btn-clear-history" class="text-btn" type="button">Borrar</button>
+          <button id="btn-close-history" class="icon-btn small" type="button" aria-label="Cerrar historial">✕</button>
+        </div>
+      </div>
+      <div id="history-list" class="history-list" role="log" aria-live="polite">
+        <p class="history-empty">No hay operaciones registradas</p>
+      </div>
+    </section>
+
+    <!-- Pantalla -->
+    <section class="display-container" aria-label="Pantalla de la calculadora">
+      <div class="display-meta">
+        <span id="display-mode-tag" class="meta-tag">DEG</span>
+        <span id="display-memory-tag" class="meta-tag hidden">ANS</span>
+      </div>
+      <div id="expression-display" class="expression-line" aria-label="Expresión actual">0</div>
+      <div id="result-display" class="result-line" aria-label="Resultado" aria-live="polite">0</div>
+    </section>
+
+    <!-- Teclado de funciones y operaciones -->
+    <section class="keypad-grid" aria-label="Teclado de la calculadora">
+      <!-- Fila 1: Trig básica y constantes -->
+      <button class="key func-key" type="button" data-action="insert" data-value="sin(">sin</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="cos(">cos</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="tan(">tan</button>
+      <button class="key const-key" type="button" data-action="insert" data-value="π">π</button>
+      <button class="key const-key" type="button" data-action="insert" data-value="e">e</button>
+
+      <!-- Fila 2: Trig inversa y logaritmos -->
+      <button class="key func-key" type="button" data-action="insert" data-value="asin(">sin⁻¹</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="acos(">cos⁻¹</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="atan(">tan⁻¹</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="log(">log</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="ln(">ln</button>
+
+      <!-- Fila 3: Raíz, Potencia, Factorial, Porcentaje, Exp -->
+      <button class="key func-key" type="button" data-action="insert" data-value="√(">√</button>
+      <button class="key op-key" type="button" data-action="insert" data-value="^">xʸ</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="!">x!</button>
+      <button class="key op-key" type="button" data-action="insert" data-value="%">%</button>
+      <button class="key func-key" type="button" data-action="insert" data-value="exp(">exp</button>
+
+      <!-- Fila 4: Paréntesis, Limpieza, División -->
+      <button class="key paren-key" type="button" data-action="insert" data-value="(">(</button>
+      <button class="key paren-key" type="button" data-action="insert" data-value=")">)</button>
+      <button class="key clear-key" type="button" data-action="clear" title="Borrar todo (Esc)">AC</button>
+      <button class="key backspace-key" type="button" data-action="backspace" title="Borrar último (Backspace)">⌫</button>
+      <button class="key op-key highlight-op" type="button" data-action="insert" data-value="÷">÷</button>
+
+      <!-- Fila 5: Números 7-9, Ans, Multiplicación -->
+      <button class="key num-key" type="button" data-action="insert" data-value="7">7</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="8">8</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="9">9</button>
+      <button class="key action-key" type="button" data-action="ans" title="Usar último resultado">Ans</button>
+      <button class="key op-key highlight-op" type="button" data-action="insert" data-value="×">×</button>
+
+      <!-- Fila 6: Números 4-6, Signo, Resta -->
+      <button class="key num-key" type="button" data-action="insert" data-value="4">4</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="5">5</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="6">6</button>
+      <button class="key action-key" type="button" data-action="negate" title="Cambiar signo">±</button>
+      <button class="key op-key highlight-op" type="button" data-action="insert" data-value="−">−</button>
+
+      <!-- Fila 7: Números 1-3, Punto, Suma -->
+      <button class="key num-key" type="button" data-action="insert" data-value="1">1</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="2">2</button>
+      <button class="key num-key" type="button" data-action="insert" data-value="3">3</button>
+      <button class="key num-key" type="button" data-action="insert" data-value=".">.</button>
+      <button class="key op-key highlight-op" type="button" data-action="insert" data-value="+">+</button>
+
+      <!-- Fila 8: 0 (span 3), Igual (span 2) -->
+      <button class="key num-key span-3" type="button" data-action="insert" data-value="0">0</button>
+      <button class="key equals-key span-2" type="button" data-action="calculate" title="Calcular (Enter)">=</button>
+    </section>
+  </main>
+
+  <script src="calculadora.js"></script>
+  <script src="interfaz.js"></script>
+</body>
+</html>
